@@ -1,14 +1,34 @@
-import * as admin from "firebase-admin";
-import type { ServiceAccount } from "firebase-admin";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { firebaseAuth } from "./firebase";
+import { signIn as signInWithNextAuth, signOut as signOutWithNextAuth } from "next-auth/react";
 
-const cert: ServiceAccount = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-};
+export function logInWithFirebaseAuth(){
+    const provider = new GoogleAuthProvider();
 
-export const firebaseAdmin =
-  admin.apps[0] ??
-  admin.initializeApp({
-    credential: admin.credential.cert(cert),
-  });
+    signInWithPopup(firebaseAuth, provider)
+        .then(async ({user})=>{
+            if(user){
+                const refreshToken = user.refreshToken;
+                const idToken = await user.getIdToken();
+                await signInWithNextAuth("credentials", {
+                    idToken,
+                    refreshToken,
+                    callbackUrl: `/protected-page`,    //ログイン後に遷移する画面の指定
+                })
+            }
+        })
+        .catch((error)=>{
+            console.error("Error Sing In with Google", error)
+        });
+}
+
+export function logOutWithFirebaseAuth(){
+    firebaseAuth
+    .signOut()
+    .then(()=>{
+        signOutWithNextAuth({callbackUrl: `/login`});   //ログアウト後に遷移する画面の指
+    })
+    .catch((error)=>{
+        console.error("Error Sign Out with Google", error)
+    })
+}
