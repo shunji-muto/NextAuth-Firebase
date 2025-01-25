@@ -1,6 +1,6 @@
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { firebaseAdminAuth } from './firebase-admin'
+import { firebaseAdminAuth } from './firebase/firebase-admin'
 
 const fetchNewIdToken = async (refreshToken: string) => {
   const res = await fetch(

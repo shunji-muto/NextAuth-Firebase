@@ -1,4 +1,4 @@
-import { authOptions } from "@/lib/firebase/auth"
+import { authOptions } from "@/lib/auth"
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import { ReactElement } from "react"
