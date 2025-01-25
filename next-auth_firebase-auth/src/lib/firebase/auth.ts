@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       credentials: {},
-      // 1
+      // @ts-ignore:理由を書く
       authorize: async ({ idToken, refreshToken }) => {
         if (idToken && refreshToken) {
           try {
@@ -84,8 +84,8 @@ export const authOptions: NextAuthOptions = {
       session.user.uid = token.uid
       session.user.name = token.name
       session.user.image = token.image || ''
-      session.idToken = token.idToken || ''
-      session.user.birth = userData.birth || '' // データベースから取得した値もsession情報に追加
+      session.user.email = token.email || ''
+      session.user.emailVerified = token.emailVerified
 
       return session
     },
